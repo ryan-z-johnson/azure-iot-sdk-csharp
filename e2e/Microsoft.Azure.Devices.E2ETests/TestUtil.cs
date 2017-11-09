@@ -59,8 +59,7 @@ namespace Microsoft.Azure.Devices.E2ETests
 
         public static Tuple<string, RegistryManager> InitializeEnvironment(string devicePrefix)
         {
-            // TODO: change env var name back to "IOTHUB_CONN_STRING_CSHARP" for IoT Edge public preview
-            string iotHubConnectionString = Environment.GetEnvironmentVariable("IOTHUB_CONN_STRING_CSHARP_WITH_MODULES");
+            string iotHubConnectionString = Configuration.IoTHub.ConnectionString;
 
             RegistryManager rm = RegistryManager.CreateFromConnectionString(iotHubConnectionString);
 
@@ -116,7 +115,7 @@ namespace Microsoft.Azure.Devices.E2ETests
                     {
                         X509Thumbprint = new X509Thumbprint()
                         {
-                            PrimaryThumbprint = Environment.GetEnvironmentVariable("IOTHUB_PFX_X509_THUMBPRINT")
+                            PrimaryThumbprint = Configuration.IoTHub.GetCertificateWithPrivateKey().Thumbprint
                         }
                     }
                 };
