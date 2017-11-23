@@ -64,17 +64,17 @@ namespace Microsoft.Azure.Devices.Client.TransientFaultHandling
             return this.ExecuteAsyncImpl(null);
         }
 
-        private Task<TResult> ExecuteAsyncImpl(Task ignore)
+        private async Task<TResult> ExecuteAsyncImpl(Task ignore)
         {
             if (this.cancellationToken.IsCancellationRequested)
             {
                 if (this.previousTask != null)
                 {
-                    return this.previousTask;
+                    return await this.previousTask;
                 }
                 TaskCompletionSource<TResult> taskCompletionSource = new TaskCompletionSource<TResult>();
                 taskCompletionSource.TrySetCanceled();
-                return taskCompletionSource.Task;
+                return await taskCompletionSource.Task;
             }
             else
             {
@@ -102,7 +102,7 @@ namespace Microsoft.Azure.Devices.Client.TransientFaultHandling
                 }
                 if (task.Status == TaskStatus.RanToCompletion)
                 {
-                    return task;
+                    return await task;
                 }
                 if (task.Status == TaskStatus.Created)
                 {
@@ -111,7 +111,7 @@ namespace Microsoft.Azure.Devices.Client.TransientFaultHandling
                         "taskFunc"
                     }), "taskFunc");
                 }
-                return task.ContinueWith<Task<TResult>>(new Func<Task<TResult>, Task<TResult>>(this.ExecuteAsyncContinueWith), CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default).Unwrap<TResult>();
+                return await task.ConfigureAwait(false);//.ContinueWith<Task<TResult>>(new Func<Task<TResult>, Task<TResult>>(this.ExecuteAsyncContinueWith), CancellationToken.None, TaskContinuationOptions.ExecuteSynchronously, TaskScheduler.Default).Unwrap<TResult>();
             }
         }
 

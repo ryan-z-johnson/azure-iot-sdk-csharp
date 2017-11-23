@@ -253,13 +253,13 @@ namespace Microsoft.Azure.Devices.Client.Transport.Mqtt
 
         public override async Task SendEventAsync(IEnumerable<Message> messages, CancellationToken cancellationToken)
         {
-            await this.HandleTimeoutCancellation(async () =>
-            {
+            //await this.HandleTimeoutCancellation(async () =>
+            //{
                 foreach (Message message in messages)
                 {
                     await this.SendEventAsync(message, cancellationToken);
                 }
-            }, cancellationToken);
+            //}, cancellationToken);
         }
 
         public override async Task<Message> ReceiveAsync(TimeSpan timeout, CancellationToken cancellationToken)

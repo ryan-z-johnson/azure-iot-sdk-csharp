@@ -81,20 +81,20 @@ namespace Microsoft.Azure.Devices.Client.TransientFaultHandling
                 }), "taskAction");
             }
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            await task.ContinueWith(delegate (Task t)
-            {
-                if (t.IsFaulted)
-                {
-                    tcs.TrySetException(t.Exception.InnerExceptions);
-                    return;
-                }
-                if (t.IsCanceled)
-                {
-                    tcs.TrySetCanceled();
-                    return;
-                }
-                tcs.TrySetResult(true);
-            }, TaskContinuationOptions.ExecuteSynchronously);
+            task.Wait();// ContinueWith(delegate (Task t)
+            //{
+            //    if (t.IsFaulted)
+            //    {
+            //        tcs.TrySetException(t.Exception.InnerExceptions);
+            //        return;
+            //    }
+            //    if (t.IsCanceled)
+            //    {
+            //        tcs.TrySetCanceled();
+            //        return;
+            //    }
+            //    tcs.TrySetResult(true);
+            //}, TaskContinuationOptions.ExecuteSynchronously);
             return await tcs.Task;
         }
 
